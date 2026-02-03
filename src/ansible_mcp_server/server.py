@@ -56,11 +56,12 @@ def ansible_inventory(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = (
+    inv_path = (
         inventory
         or (proj.inventory if proj else None)
         or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     )
+    assert inv_path is not None  # Always has a default value
     cwd = proj.root if proj else None
 
     cmd = ["ansible-inventory", "-i", inv_path, "--list"]
@@ -109,11 +110,12 @@ def inventory_graph(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = (
+    inv_path = (
         inventory
         or (proj.inventory if proj else None)
         or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     )
+    assert inv_path is not None  # Always has a default value
     cwd = proj.root if proj else None
 
     cmd = ["ansible-inventory", "-i", inv_path, "--graph"]
@@ -145,11 +147,12 @@ def inventory_find_host(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = (
+    inv_path = (
         inventory
         or (proj.inventory if proj else None)
         or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     )
+    assert inv_path is not None  # Always has a default value
     cwd = proj.root if proj else None
 
     cmd = ["ansible-inventory", "-i", inv_path, "--list"]
@@ -225,11 +228,12 @@ def ansible_playbook(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = (
+    inv_path = (
         inventory
         or (proj.inventory if proj else None)
         or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     )
+    assert inv_path is not None  # Always has a default value
     cwd = proj.root if proj else None
 
     cmd = ["ansible-playbook", playbook, "-i", inv_path]
@@ -291,11 +295,12 @@ def ansible_task(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = (
+    inv_path = (
         inventory
         or (proj.inventory if proj else None)
         or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     )
+    assert inv_path is not None  # Always has a default value
     cwd = proj.root if proj else None
 
     cmd = ["ansible", hosts, "-i", inv_path, "-m", module]
@@ -338,12 +343,13 @@ def ansible_ping(
     Returns:
         Ping results
     """
-    return ansible_task(  # type: ignore[misc]
+    result = ansible_task(
         hosts=hosts,
         module="ping",
         inventory=inventory,
         project=project,
     )
+    return str(result)
 
 
 @mcp.tool()
@@ -365,11 +371,12 @@ def validate_playbook(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = (
+    inv_path = (
         inventory
         or (proj.inventory if proj else None)
         or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     )
+    assert inv_path is not None  # Always has a default value
     cwd = proj.root if proj else None
 
     cmd = ["ansible-playbook", playbook, "-i", inv_path, "--syntax-check"]
@@ -746,13 +753,14 @@ def ansible_gather_facts(
     if filter_pattern:
         args["filter"] = filter_pattern
 
-    return ansible_task(  # type: ignore[misc]
+    result = ansible_task(
         hosts=hosts,
         module="setup",
         args=args if args else None,
         inventory=inventory,
         project=project,
     )
+    return str(result)
 
 
 @mcp.tool()
@@ -772,10 +780,12 @@ def ansible_diagnose_host(
         Diagnostic results with health score
     """
     # Gather facts
-    facts_result = ansible_gather_facts(  # type: ignore[misc]
-        hosts=hostname,
-        inventory=inventory,
-        project=project,
+    facts_result = str(
+        ansible_gather_facts(
+            hosts=hostname,
+            inventory=inventory,
+            project=project,
+        )
     )
 
     try:
@@ -826,7 +836,7 @@ def ansible_service_manager(
     Returns:
         Service management results
     """
-    return ansible_task(  # type: ignore[misc]
+    result = ansible_task(
         hosts=hosts,
         module="systemd",
         args={"name": service, "state": state},
@@ -834,6 +844,7 @@ def ansible_service_manager(
         become=True,
         project=project,
     )
+    return str(result)
 
 
 def main():
