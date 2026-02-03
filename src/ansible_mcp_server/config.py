@@ -4,7 +4,6 @@ import json
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
 
 
 @dataclass
@@ -13,18 +12,18 @@ class ProjectDefinition:
 
     name: str
     root: str
-    inventory: Optional[str] = None
-    roles_path: Optional[List[str]] = None
-    collections_paths: Optional[List[str]] = None
-    env_vars: Dict[str, str] = field(default_factory=dict)
+    inventory: str | None = None
+    roles_path: list[str] | None = None
+    collections_paths: list[str] | None = None
+    env_vars: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass
 class ServerConfiguration:
     """Server configuration with multiple projects."""
 
-    projects: Dict[str, ProjectDefinition] = field(default_factory=dict)
-    default_project: Optional[str] = None
+    projects: dict[str, ProjectDefinition] = field(default_factory=dict)
+    default_project: str | None = None
 
 
 def _config_path() -> Path:
@@ -55,7 +54,7 @@ def load_config() -> ServerConfiguration:
         return ServerConfiguration()
 
     try:
-        with open(config_file, "r") as f:
+        with open(config_file) as f:
             data = json.load(f)
 
         projects = {}
@@ -83,9 +82,11 @@ def save_config(config: ServerConfiguration) -> None:
     Args:
         config: ServerConfiguration to save
     """
+    from typing import Any
+
     config_file = _config_path()
 
-    data = {
+    data: dict[str, Any] = {
         "projects": {},
         "default_project": config.default_project,
     }
@@ -104,7 +105,7 @@ def save_config(config: ServerConfiguration) -> None:
         json.dump(data, f, indent=2)
 
 
-def project_env(project: ProjectDefinition) -> Dict[str, str]:
+def project_env(project: ProjectDefinition) -> dict[str, str]:
     """Build environment variables for a project.
 
     Args:
@@ -135,8 +136,8 @@ def project_env(project: ProjectDefinition) -> Dict[str, str]:
 
 def resolve_project(
     config: ServerConfiguration,
-    project_name: Optional[str] = None
-) -> Optional[ProjectDefinition]:
+    project_name: str | None = None
+) -> ProjectDefinition | None:
     """Resolve which project to use.
 
     Args:

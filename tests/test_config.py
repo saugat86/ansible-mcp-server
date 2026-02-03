@@ -1,10 +1,7 @@
 """Tests for configuration module."""
 
-import json
 import tempfile
 from pathlib import Path
-
-import pytest
 
 from ansible_mcp_server.config import (
     ProjectDefinition,

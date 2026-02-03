@@ -4,9 +4,8 @@ import json
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
-import yaml
 from fastmcp import FastMCP
 
 from ansible_mcp_server.config import (
@@ -39,8 +38,8 @@ config = load_config()
 
 @mcp.tool()
 def ansible_inventory(
-    inventory: Optional[str] = None,
-    project: Optional[str] = None,
+    inventory: str | None = None,
+    project: str | None = None,
     show_hostvars: bool = False,
 ) -> str:
     """List all hosts and groups in the Ansible inventory.
@@ -56,7 +55,7 @@ def ansible_inventory(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     cwd = proj.root if proj else None
 
     cmd = ["ansible-inventory", "-i", inv_path, "--list"]
@@ -92,8 +91,8 @@ def ansible_inventory(
 
 @mcp.tool()
 def inventory_graph(
-    inventory: Optional[str] = None,
-    project: Optional[str] = None,
+    inventory: str | None = None,
+    project: str | None = None,
 ) -> str:
     """Show inventory in graph format.
 
@@ -107,7 +106,7 @@ def inventory_graph(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     cwd = proj.root if proj else None
 
     cmd = ["ansible-inventory", "-i", inv_path, "--graph"]
@@ -123,8 +122,8 @@ def inventory_graph(
 @mcp.tool()
 def inventory_find_host(
     hostname: str,
-    inventory: Optional[str] = None,
-    project: Optional[str] = None,
+    inventory: str | None = None,
+    project: str | None = None,
 ) -> str:
     """Find a specific host and show its details.
 
@@ -139,7 +138,7 @@ def inventory_find_host(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     cwd = proj.root if proj else None
 
     cmd = ["ansible-inventory", "-i", inv_path, "--list"]
@@ -181,15 +180,15 @@ def inventory_find_host(
 @mcp.tool()
 def ansible_playbook(
     playbook: str,
-    inventory: Optional[str] = None,
-    extra_vars: Optional[Dict[str, Any]] = None,
-    tags: Optional[str] = None,
-    skip_tags: Optional[str] = None,
-    limit: Optional[str] = None,
+    inventory: str | None = None,
+    extra_vars: dict[str, Any] | None = None,
+    tags: str | None = None,
+    skip_tags: str | None = None,
+    limit: str | None = None,
     check: bool = False,
     diff: bool = False,
     verbose: int = 0,
-    project: Optional[str] = None,
+    project: str | None = None,
 ) -> str:
     """Run an Ansible playbook.
 
@@ -211,7 +210,7 @@ def ansible_playbook(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     cwd = proj.root if proj else None
 
     cmd = ["ansible-playbook", playbook, "-i", inv_path]
@@ -245,12 +244,12 @@ def ansible_playbook(
 def ansible_task(
     hosts: str,
     module: str,
-    args: Optional[Dict[str, Any]] = None,
-    inventory: Optional[str] = None,
+    args: dict[str, Any] | None = None,
+    inventory: str | None = None,
     become: bool = False,
     check: bool = False,
     verbose: int = 0,
-    project: Optional[str] = None,
+    project: str | None = None,
 ) -> str:
     """Run an ad-hoc Ansible task.
 
@@ -270,7 +269,7 @@ def ansible_task(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     cwd = proj.root if proj else None
 
     cmd = ["ansible", hosts, "-i", inv_path, "-m", module]
@@ -297,8 +296,8 @@ def ansible_task(
 @mcp.tool()
 def ansible_ping(
     hosts: str = "all",
-    inventory: Optional[str] = None,
-    project: Optional[str] = None,
+    inventory: str | None = None,
+    project: str | None = None,
 ) -> str:
     """Ping Ansible hosts to test connectivity.
 
@@ -310,7 +309,7 @@ def ansible_ping(
     Returns:
         Ping results
     """
-    return ansible_task(
+    return ansible_task(  # type: ignore[misc]
         hosts=hosts,
         module="ping",
         inventory=inventory,
@@ -321,8 +320,8 @@ def ansible_ping(
 @mcp.tool()
 def validate_playbook(
     playbook: str,
-    inventory: Optional[str] = None,
-    project: Optional[str] = None,
+    inventory: str | None = None,
+    project: str | None = None,
 ) -> str:
     """Validate playbook syntax.
 
@@ -337,7 +336,7 @@ def validate_playbook(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
     cwd = proj.root if proj else None
 
     cmd = ["ansible-playbook", playbook, "-i", inv_path, "--syntax-check"]
@@ -356,7 +355,7 @@ def validate_playbook(
 def create_playbook(
     path: str,
     content: Any,
-    project: Optional[str] = None,
+    project: str | None = None,
 ) -> str:
     """Create a new playbook file.
 
@@ -401,9 +400,9 @@ def create_playbook(
 def register_project(
     name: str,
     root: str,
-    inventory: Optional[str] = None,
-    roles_path: Optional[str] = None,
-    collections_paths: Optional[str] = None,
+    inventory: str | None = None,
+    roles_path: str | None = None,
+    collections_paths: str | None = None,
     set_as_default: bool = False,
 ) -> str:
     """Register an Ansible project.
@@ -469,7 +468,7 @@ def list_projects() -> str:
 
 @mcp.tool()
 def project_playbooks(
-    project: Optional[str] = None,
+    project: str | None = None,
 ) -> str:
     """List all playbooks in a project.
 
@@ -501,9 +500,9 @@ def project_playbooks(
 @mcp.tool()
 def vault_encrypt(
     file_path: str,
-    vault_password: Optional[str] = None,
-    vault_id: Optional[str] = None,
-    project: Optional[str] = None,
+    vault_password: str | None = None,
+    vault_id: str | None = None,
+    project: str | None = None,
 ) -> str:
     """Encrypt a file with Ansible Vault.
 
@@ -547,9 +546,9 @@ def vault_encrypt(
 @mcp.tool()
 def vault_decrypt(
     file_path: str,
-    vault_password: Optional[str] = None,
-    vault_id: Optional[str] = None,
-    project: Optional[str] = None,
+    vault_password: str | None = None,
+    vault_id: str | None = None,
+    project: str | None = None,
 ) -> str:
     """Decrypt a file encrypted with Ansible Vault.
 
@@ -591,8 +590,8 @@ def vault_decrypt(
 @mcp.tool()
 def vault_view(
     file_path: str,
-    vault_password: Optional[str] = None,
-    project: Optional[str] = None,
+    vault_password: str | None = None,
+    project: str | None = None,
 ) -> str:
     """View an encrypted file without decrypting it.
 
@@ -635,7 +634,7 @@ def vault_view(
 def galaxy_install(
     requirements_file: str = "requirements.yml",
     force: bool = False,
-    project: Optional[str] = None,
+    project: str | None = None,
 ) -> str:
     """Install roles and collections from requirements file.
 
@@ -671,9 +670,9 @@ def galaxy_install(
 @mcp.tool()
 def ansible_gather_facts(
     hosts: str = "all",
-    filter_pattern: Optional[str] = None,
-    inventory: Optional[str] = None,
-    project: Optional[str] = None,
+    filter_pattern: str | None = None,
+    inventory: str | None = None,
+    project: str | None = None,
 ) -> str:
     """Gather system facts from hosts.
 
@@ -690,7 +689,7 @@ def ansible_gather_facts(
     if filter_pattern:
         args["filter"] = filter_pattern
 
-    return ansible_task(
+    return ansible_task(  # type: ignore[misc]
         hosts=hosts,
         module="setup",
         args=args if args else None,
@@ -702,8 +701,8 @@ def ansible_gather_facts(
 @mcp.tool()
 def ansible_diagnose_host(
     hostname: str,
-    inventory: Optional[str] = None,
-    project: Optional[str] = None,
+    inventory: str | None = None,
+    project: str | None = None,
 ) -> str:
     """Run comprehensive diagnostics on a host.
 
@@ -716,7 +715,7 @@ def ansible_diagnose_host(
         Diagnostic results with health score
     """
     # Gather facts
-    facts_result = ansible_gather_facts(
+    facts_result = ansible_gather_facts(  # type: ignore[misc]
         hosts=hostname,
         inventory=inventory,
         project=project,
@@ -752,8 +751,8 @@ def ansible_service_manager(
     hosts: str,
     service: str,
     state: str,
-    inventory: Optional[str] = None,
-    project: Optional[str] = None,
+    inventory: str | None = None,
+    project: str | None = None,
 ) -> str:
     """Manage systemd services.
 
@@ -767,7 +766,7 @@ def ansible_service_manager(
     Returns:
         Service management results
     """
-    return ansible_task(
+    return ansible_task(  # type: ignore[misc]
         hosts=hosts,
         module="systemd",
         args={"name": service, "state": state},
