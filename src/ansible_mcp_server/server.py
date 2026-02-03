@@ -2,7 +2,6 @@
 
 import json
 import os
-import re
 import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -22,8 +21,6 @@ from ansible_mcp_server.utils import (
     dict_to_module_args,
     discover_playbooks,
     extract_hosts_from_inventory_json,
-    generate_snapshot_id,
-    parse_log_timestamp,
     run_command,
     serialize_playbook,
     split_paths,

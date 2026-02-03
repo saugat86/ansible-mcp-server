@@ -1,22 +1,18 @@
 repos:
-  # Ruff - Fast Python linter and formatter
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.3
     hooks:
-      # Run the linter
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
-      # Run the formatter
       - id: ruff-format
 
-  # Standard pre-commit hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-        args: [--unsafe]  # Allow custom YAML tags
+        args: [--unsafe]
       - id: check-toml
       - id: check-json
       - id: check-added-large-files
@@ -27,7 +23,6 @@ repos:
       - id: mixed-line-ending
         args: [--fix=lf]
 
-  # Python-specific checks
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.10.0
     hooks:
@@ -36,7 +31,6 @@ repos:
       - id: python-no-eval
       - id: python-use-type-annotations
 
-  # Type checking with mypy
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.14.1
     hooks:
@@ -47,7 +41,6 @@ repos:
         args: [--ignore-missing-imports, --show-error-codes]
         files: ^src/
 
-  # Security scanning with bandit
   - repo: https://github.com/PyCQA/bandit
     rev: 1.8.0
     hooks:
@@ -56,14 +49,12 @@ repos:
         additional_dependencies: [bandit[toml]]
         files: ^src/
 
-  # YAML linting
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.35.1
     hooks:
       - id: yamllint
         args: [--strict, -c=.yamllint.yaml]
 
-  # Markdown linting
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.42.0
     hooks:
