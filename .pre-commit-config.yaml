@@ -38,6 +38,7 @@ repos:
         additional_dependencies:
           - types-PyYAML
           - types-requests
+          - fastmcp>=0.8.1
         args: [--ignore-missing-imports, --show-error-codes]
         files: ^src/
 
