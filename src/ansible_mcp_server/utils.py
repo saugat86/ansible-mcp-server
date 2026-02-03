@@ -2,7 +2,7 @@
 
 import hashlib
 import json
-import subprocess
+import subprocess  # nosec B404 - Required for running Ansible CLI commands
 import tempfile
 from datetime import datetime
 from pathlib import Path
@@ -29,6 +29,7 @@ def run_command(
         Tuple of (return_code, stdout, stderr)
     """
     try:
+        # nosec B603 - Command args are controlled, not from user input
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
