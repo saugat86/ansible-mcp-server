@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.1.0 - Complete Restructure (2026-02-03)
+## v0.1 - Complete Restructure (2026-02-03)
 
 ### 🎉 Major Architectural Changes
 
