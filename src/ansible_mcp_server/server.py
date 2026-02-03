@@ -343,7 +343,7 @@ def ansible_ping(
     Returns:
         Ping results
     """
-    result = ansible_task(  # type: ignore[operator]
+    result = ansible_task(
         hosts=hosts,
         module="ping",
         inventory=inventory,
@@ -753,7 +753,7 @@ def ansible_gather_facts(
     if filter_pattern:
         args["filter"] = filter_pattern
 
-    result = ansible_task(  # type: ignore[operator]
+    result = ansible_task(
         hosts=hosts,
         module="setup",
         args=args if args else None,
@@ -781,7 +781,7 @@ def ansible_diagnose_host(
     """
     # Gather facts
     facts_result = str(
-        ansible_gather_facts(  # type: ignore[operator]
+        ansible_gather_facts(
             hosts=hostname,
             inventory=inventory,
             project=project,
@@ -836,7 +836,7 @@ def ansible_service_manager(
     Returns:
         Service management results
     """
-    result = ansible_task(  # type: ignore[operator]
+    result = ansible_task(
         hosts=hosts,
         module="systemd",
         args={"name": service, "state": state},
