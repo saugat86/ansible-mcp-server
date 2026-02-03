@@ -1,0 +1,26 @@
+---
+# Gather and display system information
+- name: Gather system information
+  hosts: all
+  gather_facts: yes
+
+  tasks:
+    - name: Display OS information
+      ansible.builtin.debug:
+        msg: |
+          Hostname: {{ ansible_hostname }}
+          OS: {{ ansible_distribution }} {{ ansible_distribution_version }}
+          Architecture: {{ ansible_architecture }}
+          Kernel: {{ ansible_kernel }}
+
+    - name: Display memory information
+      ansible.builtin.debug:
+        msg: |
+          Total Memory: {{ ansible_memtotal_mb }} MB
+          Free Memory: {{ ansible_memfree_mb }} MB
+
+    - name: Display CPU information
+      ansible.builtin.debug:
+        msg: |
+          CPU Cores: {{ ansible_processor_cores }}
+          CPU Count: {{ ansible_processor_count }}

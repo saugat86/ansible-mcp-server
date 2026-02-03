@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "ansible": {
+      "command": "python",
+      "args": [
+        "-m",
+        "ansible_mcp_server.server"
+      ],
+      "env": {
+        "MCP_ANSIBLE_INVENTORY": "inventory",
+        "MCP_ANSIBLE_PROJECT_ROOT": "/path/to/your/ansible/project"
+      }
+    }
+  }
+}

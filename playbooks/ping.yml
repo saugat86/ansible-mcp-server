@@ -1,0 +1,13 @@
+---
+# Simple ping playbook to test connectivity
+- name: Test connectivity to all hosts
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: Ping all hosts
+      ansible.builtin.ping:
+
+    - name: Display message
+      ansible.builtin.debug:
+        msg: "Successfully connected to {{ inventory_hostname }}"
