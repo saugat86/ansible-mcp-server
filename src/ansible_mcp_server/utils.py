@@ -6,17 +6,17 @@ import subprocess  # nosec B404 - Required for running Ansible CLI commands
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import yaml
 
 
 def run_command(
-    cmd: List[str],
-    cwd: Optional[str] = None,
-    env: Optional[Dict[str, str]] = None,
+    cmd: list[str],
+    cwd: str | None = None,
+    env: dict[str, str] | None = None,
     timeout: int = 300,
-) -> Tuple[int, str, str]:
+) -> tuple[int, str, str]:
     """Run a command and return output.
 
     Args:
@@ -61,7 +61,7 @@ def serialize_playbook(playbook: Any) -> str:
     return yaml.dump(playbook, default_flow_style=False, sort_keys=False)
 
 
-def dict_to_module_args(args: Dict[str, Any]) -> str:
+def dict_to_module_args(args: dict[str, Any]) -> str:
     """Convert dict to Ansible module arguments.
 
     Args:
@@ -80,7 +80,7 @@ def dict_to_module_args(args: Dict[str, Any]) -> str:
     return " ".join(parts)
 
 
-def split_paths(path_str: Optional[str]) -> List[str]:
+def split_paths(path_str: str | None) -> list[str]:
     """Split colon-separated path string.
 
     Args:
@@ -94,7 +94,7 @@ def split_paths(path_str: Optional[str]) -> List[str]:
     return [p.strip() for p in path_str.split(":") if p.strip()]
 
 
-def extract_hosts_from_inventory_json(inventory_data: Dict) -> Tuple[List[str], List[str]]:
+def extract_hosts_from_inventory_json(inventory_data: dict) -> tuple[list[str], list[str]]:
     """Extract hosts and groups from ansible-inventory JSON output.
 
     Args:
@@ -118,7 +118,7 @@ def extract_hosts_from_inventory_json(inventory_data: Dict) -> Tuple[List[str], 
     return hosts, groups
 
 
-def discover_playbooks(root_dir: str) -> List[str]:
+def discover_playbooks(root_dir: str) -> list[str]:
     """Discover all playbook files in a directory.
 
     Args:
@@ -184,7 +184,7 @@ def create_temp_file(content: str, suffix: str = ".txt") -> str:
         return f.name
 
 
-def calculate_health_score(metrics: Dict[str, Any]) -> int:
+def calculate_health_score(metrics: dict[str, Any]) -> int:
     """Calculate health score from system metrics.
 
     Args:
@@ -196,34 +196,34 @@ def calculate_health_score(metrics: Dict[str, Any]) -> int:
     score = 100
 
     # CPU usage
-    cpu_usage = metrics.get("cpu_usage", 0)
+    cpu_usage = int(metrics.get("cpu_usage", 0))
     if cpu_usage > 90:
         score -= 30
     elif cpu_usage > 70:
         score -= 15
 
     # Memory usage
-    mem_usage = metrics.get("memory_usage", 0)
+    mem_usage = int(metrics.get("memory_usage", 0))
     if mem_usage > 90:
         score -= 30
     elif mem_usage > 80:
         score -= 15
 
     # Disk usage
-    disk_usage = metrics.get("disk_usage", 0)
+    disk_usage = int(metrics.get("disk_usage", 0))
     if disk_usage > 95:
         score -= 25
     elif disk_usage > 85:
         score -= 10
 
     # Failed services
-    failed_services = metrics.get("failed_services", 0)
+    failed_services = int(metrics.get("failed_services", 0))
     score -= failed_services * 10
 
     return max(0, min(100, score))
 
 
-def parse_log_timestamp(line: str) -> Optional[str]:
+def parse_log_timestamp(line: str) -> str | None:
     """Extract timestamp from log line.
 
     Args:
