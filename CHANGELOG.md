@@ -1,6 +1,12 @@
 # Changelog
 
-## v0.1 - Complete Restructure (2026-02-03)
+## v0.1.1 (2026-02-03)
+
+### 🔧 Fixes
+- Fixed PyPI publishing workflow to use token-based authentication
+- Updated project documentation (CHANGELOG.md, PROJECT_STRUCTURE.md)
+
+## v0.1.0 - Complete Restructure (2026-02-03)
 
 ### 🎉 Major Architectural Changes
 
