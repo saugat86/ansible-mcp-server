@@ -1,4 +1,4 @@
-# Project Structure
+# Project Structure for ansible-mcp-server
 
 ## Directory Layout
 
