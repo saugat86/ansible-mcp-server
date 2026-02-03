@@ -86,6 +86,7 @@ class TestConfigPersistence:
         try:
             # Save config
             import os
+
             os.environ["MCP_ANSIBLE_CONFIG"] = temp_path
             save_config(config)
 

@@ -94,7 +94,9 @@ def split_paths(path_str: str | None) -> list[str]:
     return [p.strip() for p in path_str.split(":") if p.strip()]
 
 
-def extract_hosts_from_inventory_json(inventory_data: dict) -> tuple[list[str], list[str]]:
+def extract_hosts_from_inventory_json(
+    inventory_data: dict,
+) -> tuple[list[str], list[str]]:
     """Extract hosts and groups from ansible-inventory JSON output.
 
     Args:
@@ -132,8 +134,14 @@ def discover_playbooks(root_dir: str) -> list[str]:
 
     # Directories to exclude
     exclude_dirs = {
-        ".git", "group_vars", "host_vars", "roles",
-        "collections", "venv", ".venv", "__pycache__"
+        ".git",
+        "group_vars",
+        "host_vars",
+        "roles",
+        "collections",
+        "venv",
+        ".venv",
+        "__pycache__",
     }
 
     for yml_file in root_path.rglob("*.yml"):
@@ -175,11 +183,7 @@ def create_temp_file(content: str, suffix: str = ".txt") -> str:
     Returns:
         Path to temporary file
     """
-    with tempfile.NamedTemporaryFile(
-        mode="w",
-        suffix=suffix,
-        delete=False
-    ) as f:
+    with tempfile.NamedTemporaryFile(mode="w", suffix=suffix, delete=False) as f:
         f.write(content)
         return f.name
 
@@ -237,8 +241,8 @@ def parse_log_timestamp(line: str) -> str | None:
     # Common timestamp patterns
     patterns = [
         r"\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}",  # ISO format
-        r"\d{2}/\w{3}/\d{4}:\d{2}:\d{2}:\d{2}",    # Apache format
-        r"\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2}",     # Syslog format
+        r"\d{2}/\w{3}/\d{4}:\d{2}:\d{2}:\d{2}",  # Apache format
+        r"\w{3}\s+\d{1,2}\s+\d{2}:\d{2}:\d{2}",  # Syslog format
     ]
 
     for pattern in patterns:

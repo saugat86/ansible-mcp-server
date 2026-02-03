@@ -36,6 +36,7 @@ config = load_config()
 # INVENTORY TOOLS
 # ============================================================================
 
+
 @mcp.tool()
 def ansible_inventory(
     inventory: str | None = None,
@@ -55,7 +56,11 @@ def ansible_inventory(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = (
+        inventory
+        or (proj.inventory if proj else None)
+        or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    )
     cwd = proj.root if proj else None
 
     cmd = ["ansible-inventory", "-i", inv_path, "--list"]
@@ -63,11 +68,9 @@ def ansible_inventory(
     rc, stdout, stderr = run_command(cmd, cwd=cwd, env=env)
 
     if rc != 0:
-        return json.dumps({
-            "error": "Failed to list inventory",
-            "stderr": stderr,
-            "return_code": rc
-        })
+        return json.dumps(
+            {"error": "Failed to list inventory", "stderr": stderr, "return_code": rc}
+        )
 
     try:
         inventory_data = json.loads(stdout)
@@ -106,7 +109,11 @@ def inventory_graph(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = (
+        inventory
+        or (proj.inventory if proj else None)
+        or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    )
     cwd = proj.root if proj else None
 
     cmd = ["ansible-inventory", "-i", inv_path, "--graph"]
@@ -138,7 +145,11 @@ def inventory_find_host(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = (
+        inventory
+        or (proj.inventory if proj else None)
+        or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    )
     cwd = proj.root if proj else None
 
     cmd = ["ansible-inventory", "-i", inv_path, "--list"]
@@ -163,11 +174,14 @@ def inventory_find_host(
             if "hosts" in group_data and hostname in group_data["hosts"]:
                 groups.append(group_name)
 
-        return json.dumps({
-            "hostname": hostname,
-            "groups": groups,
-            "hostvars": hostvars[hostname],
-        }, indent=2)
+        return json.dumps(
+            {
+                "hostname": hostname,
+                "groups": groups,
+                "hostvars": hostvars[hostname],
+            },
+            indent=2,
+        )
 
     except json.JSONDecodeError as e:
         return json.dumps({"error": f"Failed to parse inventory: {e}"})
@@ -176,6 +190,7 @@ def inventory_find_host(
 # ============================================================================
 # PLAYBOOK TOOLS
 # ============================================================================
+
 
 @mcp.tool()
 def ansible_playbook(
@@ -210,7 +225,11 @@ def ansible_playbook(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = (
+        inventory
+        or (proj.inventory if proj else None)
+        or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    )
     cwd = proj.root if proj else None
 
     cmd = ["ansible-playbook", playbook, "-i", inv_path]
@@ -232,12 +251,15 @@ def ansible_playbook(
 
     rc, stdout, stderr = run_command(cmd, cwd=cwd, env=env)
 
-    return json.dumps({
-        "return_code": rc,
-        "stdout": stdout,
-        "stderr": stderr,
-        "success": rc == 0,
-    }, indent=2)
+    return json.dumps(
+        {
+            "return_code": rc,
+            "stdout": stdout,
+            "stderr": stderr,
+            "success": rc == 0,
+        },
+        indent=2,
+    )
 
 
 @mcp.tool()
@@ -269,7 +291,11 @@ def ansible_task(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = (
+        inventory
+        or (proj.inventory if proj else None)
+        or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    )
     cwd = proj.root if proj else None
 
     cmd = ["ansible", hosts, "-i", inv_path, "-m", module]
@@ -285,12 +311,15 @@ def ansible_task(
 
     rc, stdout, stderr = run_command(cmd, cwd=cwd, env=env)
 
-    return json.dumps({
-        "return_code": rc,
-        "stdout": stdout,
-        "stderr": stderr,
-        "success": rc == 0,
-    }, indent=2)
+    return json.dumps(
+        {
+            "return_code": rc,
+            "stdout": stdout,
+            "stderr": stderr,
+            "success": rc == 0,
+        },
+        indent=2,
+    )
 
 
 @mcp.tool()
@@ -336,19 +365,26 @@ def validate_playbook(
     proj = resolve_project(config, project)
     env = project_env(proj) if proj else None
 
-    inv_path: str = inventory or (proj.inventory if proj else None) or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    inv_path: str = (
+        inventory
+        or (proj.inventory if proj else None)
+        or os.getenv("MCP_ANSIBLE_INVENTORY", "inventory")
+    )
     cwd = proj.root if proj else None
 
     cmd = ["ansible-playbook", playbook, "-i", inv_path, "--syntax-check"]
 
     rc, stdout, stderr = run_command(cmd, cwd=cwd, env=env)
 
-    return json.dumps({
-        "valid": rc == 0,
-        "return_code": rc,
-        "stdout": stdout,
-        "stderr": stderr,
-    }, indent=2)
+    return json.dumps(
+        {
+            "valid": rc == 0,
+            "return_code": rc,
+            "stdout": stdout,
+            "stderr": stderr,
+        },
+        indent=2,
+    )
 
 
 @mcp.tool()
@@ -383,11 +419,13 @@ def create_playbook(
 
     try:
         playbook_path.write_text(yaml_content)
-        return json.dumps({
-            "success": True,
-            "path": str(playbook_path),
-            "message": f"Playbook created at {playbook_path}",
-        })
+        return json.dumps(
+            {
+                "success": True,
+                "path": str(playbook_path),
+                "message": f"Playbook created at {playbook_path}",
+            }
+        )
     except Exception as e:
         return json.dumps({"error": str(e)})
 
@@ -395,6 +433,7 @@ def create_playbook(
 # ============================================================================
 # PROJECT MANAGEMENT
 # ============================================================================
+
 
 @mcp.tool()
 def register_project(
@@ -435,12 +474,14 @@ def register_project(
 
     save_config(config)
 
-    return json.dumps({
-        "success": True,
-        "project": name,
-        "root": project.root,
-        "is_default": config.default_project == name,
-    })
+    return json.dumps(
+        {
+            "success": True,
+            "project": name,
+            "root": project.root,
+            "is_default": config.default_project == name,
+        }
+    )
 
 
 @mcp.tool()
@@ -459,11 +500,14 @@ def list_projects() -> str:
             "is_default": name == config.default_project,
         }
 
-    return json.dumps({
-        "projects": projects_data,
-        "default": config.default_project,
-        "total": len(config.projects),
-    }, indent=2)
+    return json.dumps(
+        {
+            "projects": projects_data,
+            "default": config.default_project,
+            "total": len(config.projects),
+        },
+        indent=2,
+    )
 
 
 @mcp.tool()
@@ -485,17 +529,21 @@ def project_playbooks(
 
     playbooks = discover_playbooks(proj.root)
 
-    return json.dumps({
-        "project": proj.name,
-        "root": proj.root,
-        "playbooks": playbooks,
-        "total": len(playbooks),
-    }, indent=2)
+    return json.dumps(
+        {
+            "project": proj.name,
+            "root": proj.root,
+            "playbooks": playbooks,
+            "total": len(playbooks),
+        },
+        indent=2,
+    )
 
 
 # ============================================================================
 # VAULT OPERATIONS
 # ============================================================================
+
 
 @mcp.tool()
 def vault_encrypt(
@@ -536,11 +584,13 @@ def vault_encrypt(
     if vault_password:
         os.unlink(password_file)
 
-    return json.dumps({
-        "success": rc == 0,
-        "stdout": stdout,
-        "stderr": stderr,
-    })
+    return json.dumps(
+        {
+            "success": rc == 0,
+            "stdout": stdout,
+            "stderr": stderr,
+        }
+    )
 
 
 @mcp.tool()
@@ -580,11 +630,13 @@ def vault_decrypt(
     if vault_password:
         os.unlink(password_file)
 
-    return json.dumps({
-        "success": rc == 0,
-        "stdout": stdout,
-        "stderr": stderr,
-    })
+    return json.dumps(
+        {
+            "success": rc == 0,
+            "stdout": stdout,
+            "stderr": stderr,
+        }
+    )
 
 
 @mcp.tool()
@@ -630,6 +682,7 @@ def vault_view(
 # GALAXY OPERATIONS
 # ============================================================================
 
+
 @mcp.tool()
 def galaxy_install(
     requirements_file: str = "requirements.yml",
@@ -656,16 +709,20 @@ def galaxy_install(
 
     rc, stdout, stderr = run_command(cmd, cwd=cwd, env=env)
 
-    return json.dumps({
-        "success": rc == 0,
-        "stdout": stdout,
-        "stderr": stderr,
-    }, indent=2)
+    return json.dumps(
+        {
+            "success": rc == 0,
+            "stdout": stdout,
+            "stderr": stderr,
+        },
+        indent=2,
+    )
 
 
 # ============================================================================
 # DIAGNOSTICS AND TROUBLESHOOTING
 # ============================================================================
+
 
 @mcp.tool()
 def ansible_gather_facts(
@@ -735,12 +792,15 @@ def ansible_diagnose_host(
         # Calculate health score
         health_score = calculate_health_score(metrics)
 
-        return json.dumps({
-            "hostname": hostname,
-            "health_score": health_score,
-            "facts": facts_data,
-            "metrics": metrics,
-        }, indent=2)
+        return json.dumps(
+            {
+                "hostname": hostname,
+                "health_score": health_score,
+                "facts": facts_data,
+                "metrics": metrics,
+            },
+            indent=2,
+        )
 
     except json.JSONDecodeError:
         return facts_result

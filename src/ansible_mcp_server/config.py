@@ -135,8 +135,7 @@ def project_env(project: ProjectDefinition) -> dict[str, str]:
 
 
 def resolve_project(
-    config: ServerConfiguration,
-    project_name: str | None = None
+    config: ServerConfiguration, project_name: str | None = None
 ) -> ProjectDefinition | None:
     """Resolve which project to use.
 
