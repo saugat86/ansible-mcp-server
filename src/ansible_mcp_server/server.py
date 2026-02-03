@@ -419,7 +419,7 @@ def create_playbook(
     playbook_path.parent.mkdir(parents=True, exist_ok=True)
 
     # Convert content to YAML if needed
-    if isinstance(content, (dict, list)):
+    if isinstance(content, dict | list):
         yaml_content = serialize_playbook(content)
     else:
         yaml_content = content

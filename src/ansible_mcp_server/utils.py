@@ -72,7 +72,7 @@ def dict_to_module_args(args: dict[str, Any]) -> str:
     """
     parts = []
     for key, value in args.items():
-        if isinstance(value, (dict, list)):
+        if isinstance(value, dict | list):
             value = json.dumps(value)
         elif isinstance(value, bool):
             value = str(value).lower()
