@@ -8,9 +8,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import yaml
-from mcp.server import Server
-from mcp.server.stdio import stdio_server
-from mcp.types import Tool, TextContent
+from fastmcp import FastMCP
 
 from ansible_mcp_server.config import (
     ProjectDefinition,
@@ -32,7 +30,7 @@ from ansible_mcp_server.utils import (
 )
 
 # Initialize MCP server
-mcp = Server("ansible-mcp")
+mcp = FastMCP("ansible-mcp")
 
 # Global configuration
 config = load_config()
@@ -784,17 +782,7 @@ def ansible_service_manager(
 
 def main():
     """Run the MCP server."""
-    import asyncio
-
-    async def run():
-        async with stdio_server() as (read_stream, write_stream):
-            await mcp.run(
-                read_stream,
-                write_stream,
-                mcp.create_initialization_options()
-            )
-
-    asyncio.run(run())
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

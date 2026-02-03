@@ -10,12 +10,12 @@ name = "ansible-mcp-server"
 version = "0.1.0"
 description = "A Model Context Protocol (MCP) server for Ansible automation"
 readme = "README.md"
-requires-python = ">=3.12.2"
+requires-python = ">=3.10"
 authors = [
     { name = "Saugat Tiwari", email = "saugattripathi86@gmail.com" }
 ]
 dependencies = [
-    "mcp>=1.2.0",
+    "fastmcp>=0.8.1",
     "pyyaml>=6.0.1",
     "typing-extensions>=4.9.0",
     "ansible-core>=2.16.0",
@@ -36,7 +36,7 @@ dev = [
 ansible-mcp-server = "ansible_mcp_server.server:main"
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py310"
 line-length = 88
 
 [tool.ruff.lint]
@@ -44,7 +44,7 @@ select = ["E", "F", "I", "N", "W", "UP"]
 ignore = ["E501"]
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
